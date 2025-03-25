@@ -18,7 +18,7 @@ jobs:
       - name: Install Necessary Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl sed wget
+          sudo apt-get install -y curl sed wget unzip
 
       - name: Download Alpha Binary
         run: |
@@ -34,8 +34,14 @@ jobs:
 
       - name: Prepare Binary Folder
         run: |
+          unzip mihomo-windows-amd64-alpha.zip
+          mv -f mihomo-windows-amd64.exe mihomo-windows-amd64-alpha.exe
+          unzip mihomo-windows-amd64.zip
+
+      - name: Prepare Binary Folder
+        run: |
           mkdir -p binary
-          mv -f mihomo-windows-amd64-alpha.zip mihomo-windows-amd64.zip binary
+          mv -f mihomo-windows-amd64.exe mihomo-windows-amd64-alpha.exe binary
 
       - name: Push Files
         run: |
