@@ -1,0 +1,56 @@
+name: Get mihomo binary
+
+on:
+  push:
+    branches:
+    - main
+  schedule:
+  - cron: '0 1 * * *'
+  workflow_dispatch:
+
+
+jobs:
+  get-mihomo-binary:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Necessary Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl sed wget
+
+    - name: Download Alpha Binary
+      run: |
+        MIHOMO_ALPHA_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha | grep '.zip' | grep 'mihomo-windows-amd64-alpha-' | grep 'browser_download_url' | awk -F\" '{print $4}')
+        MIHOMO_ALPHA_VERSION=$(echo ${MIHOMO_ALPHA_URL} | awk -F/ '{print $9}')
+        wget -O mihomo-windows-amd64-alpha.zip ${MIHOMO_ALPHA_URL}
+
+    - name: Download Latest Binary
+      run: |
+        MIHOMO_LATEST_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases | grep 'browser_download_url' | grep 'mihomo-windows-amd64-' | grep -v 'alpha' | grep -v 'compatible' | grep -v 'go' | head -n 1 | awk -F\" '{print $4}')
+        MIHOMO_LATEST_VERSION=$(echo ${MIHOMO_LATEST_URL} | awk -F/ '{print $9}')
+        wget -O mihomo-windows-amd64.zip ${MIHOMO_LATEST_URL}
+
+    - name: Prepare Binary Folder
+      run: |
+        mkdir -p binary
+        mv -f mihomo-windows-amd64-alpha.zip mihomo-windows-amd64.zip binary
+
+    - name: Configure Git User
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+
+    - name: Check for Changes and Push Files
+      run: |
+        git checkout -b Release
+        git add binary
+        echo "Force updating repository with local content."
+        git commit -m "Force update with local content"
+        git push --force origin Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
