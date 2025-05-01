@@ -23,13 +23,17 @@ jobs:
       - name: Download Alpha Binary
         run: |
           MIHOMO_ALPHA_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha | grep '.zip' | grep 'mihomo-windows-amd64-alpha-' | grep 'browser_download_url' | awk -F\" '{print $4}')
-          MIHOMO_ALPHA_VERSION=$(echo ${MIHOMO_ALPHA_URL} | awk -F/ '{print $9}')
+          MIHOMO_ALPHA_FILENAME=$(echo ${MIHOMO_ALPHA_URL} | awk -F/ '{print $9}')
+          MIHOMO_ALPHA_VERSION=$(echo ${MIHOMO_ALPHA_FILENAME} | sed -e 's/.zip//g')
+          echo ${MIHOMO_ALPHA_VERSION} > mihomo-alpha-version.txt
           wget -O mihomo-windows-amd64-alpha.zip ${MIHOMO_ALPHA_URL}
 
       - name: Download Latest Binary
         run: |
           MIHOMO_LATEST_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases | grep 'browser_download_url' | grep 'mihomo-windows-amd64-' | grep -v 'alpha' | grep -v 'compatible' | grep -v 'go' | head -n 1 | awk -F\" '{print $4}')
-          MIHOMO_LATEST_VERSION=$(echo ${MIHOMO_LATEST_URL} | awk -F/ '{print $9}')
+          MIHOMO_LATEST_FILENAME=$(echo ${MIHOMO_LATEST_URL} | awk -F/ '{print $9}')
+          MIHOMO_LATEST_VERSION=$(echo ${MIHOMO_LATEST_FILENAME} | sed -e 's/.zip//g')
+          echo ${MIHOMO_LATEST_VERSION} > mihomo-latest-version.txt
           wget -O mihomo-windows-amd64.zip ${MIHOMO_LATEST_URL}
 
       - name: Prepare Binary Folder
@@ -41,7 +45,7 @@ jobs:
       - name: Prepare Binary Folder
         run: |
           mkdir -p binary
-          mv -f mihomo-windows-amd64.exe mihomo-windows-amd64-alpha.exe binary
+          mv -f mihomo-windows-amd64.exe mihomo-windows-amd64-alpha.exe mihomo-alpha-version.txt mihomo-latest-version.txt binary
 
       - name: Push Files
         run: |
