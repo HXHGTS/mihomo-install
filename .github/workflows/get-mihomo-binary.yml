@@ -36,8 +36,9 @@ jobs:
       - name: Prepare Binary Folder
         run: |
           unzip mihomo-windows-amd64-alpha.zip
-          mv -f mihomo-windows-amd64.exe mihomo-windows-amd64-alpha.exe
+          mv -f mihomo-windows-amd64-v3.exe mihomo-windows-amd64-alpha.exe
           unzip mihomo-windows-amd64.zip
+          mv -f mihomo-windows-amd64-v3.exe mihomo-windows-amd64.exe
 
       - name: Prepare Binary Folder
         run: |
