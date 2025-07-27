@@ -19,7 +19,7 @@ jobs:
 
       - name: Download Alpha Binary
         run: |
-          MIHOMO_ALPHA_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha | grep '.zip' | grep 'mihomo-windows-amd64-alpha-' | grep 'browser_download_url' | awk -F\" '{print $4}')
+          MIHOMO_ALPHA_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha | grep '.zip' | grep 'mihomo-windows-amd64-v3-alpha-' | grep 'browser_download_url' | awk -F\" '{print $4}')
           MIHOMO_ALPHA_FILENAME=$(echo ${MIHOMO_ALPHA_URL} | awk -F/ '{print $9}')
           MIHOMO_ALPHA_VERSION=$(echo ${MIHOMO_ALPHA_FILENAME} | sed -e 's/.zip//g')
           echo -n ${MIHOMO_ALPHA_VERSION} > mihomo-alpha-version.txt
@@ -27,7 +27,7 @@ jobs:
 
       - name: Download Latest Binary
         run: |
-          MIHOMO_LATEST_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases | grep 'browser_download_url' | grep 'mihomo-windows-amd64-' | grep -v 'alpha' | grep -v 'compatible' | grep -v 'go' | head -n 1 | awk -F\" '{print $4}')
+          MIHOMO_LATEST_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases | grep 'browser_download_url' | grep 'mihomo-windows-amd64-v3' | grep -v 'alpha' | grep -v 'compatible' | grep -v 'go' | head -n 1 | awk -F\" '{print $4}')
           MIHOMO_LATEST_FILENAME=$(echo ${MIHOMO_LATEST_URL} | awk -F/ '{print $9}')
           MIHOMO_LATEST_VERSION=$(echo ${MIHOMO_LATEST_FILENAME} | sed -e 's/.zip//g')
           echo -n ${MIHOMO_LATEST_VERSION} > mihomo-latest-version.txt
